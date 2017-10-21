@@ -13,6 +13,12 @@
     "babel-preset-react-app": "^3.0.2",
     "bootstrap": "^3.3.7",
     "css-loader": "0.28.4",
+    "eslint": "^4.9.0",
+    "eslint-config-react-app": "^2.0.1",
+    "eslint-loader": "^1.9.0",
+    "eslint-plugin-flowtype": "^2.39.1",
+    "eslint-plugin-jsx-a11y": "^6.0.2",
+    "eslint-plugin-react": "^7.4.0",
     "event-source-polyfill": "0.0.9",
     "extract-text-webpack-plugin": "2.1.2",
     "file-loader": "0.11.2",
@@ -30,7 +36,7 @@
     "webpack-hot-middleware": "2.18.2"
   },
   "devDependencies": {
-    "babel-cli": "^6.24.1",
+    "babel-cli": "^6.26.0",
     "babel-loader": "^7.1.2",
     "babel-preset-flow": "^6.23.0"
   },
