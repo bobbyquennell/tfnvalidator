@@ -1,7 +1,10 @@
 
 import React from 'react';
+import PropTypes from 'prop-types';
 import ValidatorForm from './ValidatorForm';
 import * as api from '../../api/validate';
+
+
 class Validator extends React.Component {
 
   constructor(){
@@ -30,7 +33,12 @@ class Validator extends React.Component {
       this.setState({result: msg, errors: '', checking: false});
     }).catch(error => {
       msg = error.message;
-      this.setState({result: msg, errors: msg, checking: false});
+      if(msg.indexOf('linked') !== -1){
+        this.context.router.history.push("/errorpage");
+      }
+      else{
+        this.setState({result: msg, errors: msg, checking: false});
+      }
       console.log(msg);
     });
 
@@ -64,5 +72,9 @@ class Validator extends React.Component {
     );
   }
 }
+
+Validator.contextTypes = {
+  router:PropTypes.object
+};
 
 export default Validator;

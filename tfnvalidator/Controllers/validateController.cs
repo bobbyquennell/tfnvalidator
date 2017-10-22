@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using validator.Domain.Feature;
 
 namespace tfnvalidator.Controllers
 {
@@ -13,12 +14,39 @@ namespace tfnvalidator.Controllers
     {
         // GET: api/validate
         [HttpGet]
-        public string Get(string tfn)
+        public IActionResult Get(string tfn)
         {
-            var result = tfn.ToString();
             //ToDo: server sive validation
 
-            return result;
+            var alg = new WeightedAlgorithm();
+            var validator = new TfnValidator(alg);
+            var protector = new BruteTryProtector();
+            try
+            {
+                bool isAttack = protector.IfBruteAttack(Convert.ToInt32(tfn.Replace(" ", String.Empty)));
+                if (isAttack)
+                {
+                    return BadRequest("linked");
+                }
+                var result = validator.Validate(Convert.ToInt32(tfn.Replace(" ", String.Empty)));
+                if (result == 0)
+                {
+                    return Ok("Valid TFN");
+                }
+                else
+                {
+                    return Ok("Invalid TFN");
+                }
+
+            }
+            catch (Exception e)
+            {
+
+                return BadRequest(e.Message);
+            }
+           
+
+            //return result==0 ? "Valid TFN" : "InValid TFN";
         }
 
         // GET: api/validate/5

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace tfn.Domain.Feature
+namespace validator.Domain.Feature
 {
     public class WeightedAlgorithm : IValidateAlgorithm
     {

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace tfn.Domain.Model
+namespace validator.Domain.Model
 {
     public class TFNtoCheck
     {

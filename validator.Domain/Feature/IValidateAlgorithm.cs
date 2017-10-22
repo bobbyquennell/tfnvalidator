@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace tfn.Domain.Feature
+namespace validator.Domain.Feature
 {
     public interface IValidateAlgorithm
     {

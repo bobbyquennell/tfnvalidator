@@ -44,14 +44,30 @@ export  function mock_verifyTfnWithSuccess(tfn){
 export  function verifyTfn(tfn){
   return  new Promise(
     (resolve, reject) =>{
-      axios.get(`/api/validate?tfn=${tfn.value}`)
-        .then(response=>{
-          tfn.result = response.data;
-          resolve(tfn);
-        })
-        .catch(error=>{
-          reject(new Error(error));
-        });
+
+      const reg = new RegExp("^[0-9]{1,10}$");
+      let num = tfn.value.replace(/\s+/g, '');
+      let isValidNumber = reg.test(num);
+      if(!isValidNumber){
+        //reject(new Error("linked"));
+        reject(new Error('only numbers are accepted'));
+        return;
+      }
+      if(num.length < 8 || num.length > 9){
+        reject(new Error('TFN should be 8 or 9 digits'));
+        return;
+      }
+      setTimeout(() => {
+        axios.get(`/api/validate?tfn=${num}`)
+          .then(response=>{
+            tfn.result = response.data;
+            resolve(tfn);
+          })
+          .catch(error=>{
+            //reject(new Error("linked"));
+            reject(new Error(error.response.data));
+          });
+      }, delay);
     }
   );
 }

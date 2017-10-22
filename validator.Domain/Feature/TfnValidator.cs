@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using tfn.Domain.Model;
+using validator.Domain.Model;
 
-namespace tfn.Domain.Feature
+namespace validator.Domain.Feature
 {
     public class TfnValidator
     {
