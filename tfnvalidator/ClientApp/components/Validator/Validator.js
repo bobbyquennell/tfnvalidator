@@ -23,7 +23,7 @@ class Validator extends React.Component {
     event.preventDefault();
     this.setState({checking: true});
     let msg = '';
-    api.mock_verifyTfnWithSuccess(this.state.tfnToCheck).then(result => {
+    api.verifyTfn(this.state.tfnToCheck).then(result => {
       //console.log(result);
       // this.setState({checking: false});
       msg = result.result;

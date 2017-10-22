@@ -1,7 +1,7 @@
 // This file mocks a web API by working with the hard-coded data below.
 // It uses setTimeout to simulate the delay of an AJAX call.
 // All calls return promises.
-
+import axios from 'axios';
 /* mock data */
 let TFNs = [
   {
@@ -37,6 +37,21 @@ export  function mock_verifyTfnWithSuccess(tfn){
         tfn.result = "valid TFN";
         resolve(tfn);
       }, delay);
+    }
+  );
+}
+
+export  function verifyTfn(tfn){
+  return  new Promise(
+    (resolve, reject) =>{
+      axios.get(`/api/validate?tfn=${tfn.value}`)
+        .then(response=>{
+          tfn.result = response.data;
+          resolve(tfn);
+        })
+        .catch(error=>{
+          reject(new Error(error));
+        });
     }
   );
 }
