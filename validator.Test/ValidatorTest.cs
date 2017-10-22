@@ -12,13 +12,23 @@ namespace tfn.Test
         [Test]
         public void Validate_TFN_9_Digits_Success()
         {
-            TFNtoCheck model = GenerateNewTFNtoCheck(123456789);
+            TFNtoCheck model = GenerateNewTFNtoCheck(714925631);
             var alg = new WeightedAlgorithm();
             var validator = new TfnValidator(alg);
 
             var result = validator.Validate(model.Value);
             Assert.That(result, Is.EqualTo(0));
-            //Assert.AreEqual(result, 0);
+        }
+
+        [Test]
+        public void Validate_TFN_9_Digits_Fail()
+        {
+            TFNtoCheck model = GenerateNewTFNtoCheck(123456789);
+            var alg = new WeightedAlgorithm();
+            var validator = new TfnValidator(alg);
+
+            var result = validator.Validate(model.Value);
+            Assert.That(result, Is.Not.EqualTo(0));
         }
 
 
