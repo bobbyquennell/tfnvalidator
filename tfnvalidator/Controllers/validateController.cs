@@ -5,6 +5,8 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using validator.Domain.Feature;
+using Microsoft.Extensions.Caching.Memory;
+using validator.Domain.Model;
 
 namespace tfnvalidator.Controllers
 {
@@ -12,6 +14,11 @@ namespace tfnvalidator.Controllers
     [Route("api/validate")]
     public class validateController : Controller
     {
+        /*private IMemoryCache cache;
+        public validateController (IMemoryCache cache)
+        {
+            this.cache = cache;
+        }*/
         // GET: api/validate
         [HttpGet]
         public IActionResult Get(string tfn)
