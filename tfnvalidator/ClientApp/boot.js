@@ -12,15 +12,15 @@ const baseUrl = document.getElementsByTagName('base')[0].getAttribute('href');
 const renderApp = ()=>{
   ReactDOM.render(
     <AppContainer>
-    <Router basename={baseUrl}>
-      <Routes></Routes>
-    </Router>
-  </AppContainer>, document.getElementById('react-app'));
+      <Router basename={baseUrl}>
+        <Routes/>
+      </Router>
+    </AppContainer>, document.getElementById('react-app'));
 };
 renderApp();
 // Allow Hot Module Replacement
 if (module.hot) {
-    module.hot.accept('./Routes', () => {
-        renderApp();
-    });
+  module.hot.accept('./Routes', () => {
+    renderApp();
+  });
 }

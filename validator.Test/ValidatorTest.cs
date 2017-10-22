@@ -1,8 +1,8 @@
 ﻿using System;
 using NUnit.Framework;
 //using Microsoft.VisualStudio.TestTools.UnitTesting;
-using tfn.Domain.Model;
-using tfn.Domain.Feature;
+using validator.Domain.Model;
+using validator.Domain.Feature;
 
 namespace tfn.Test
 {
