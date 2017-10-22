@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using validator.Domain.Model;
 
@@ -9,9 +10,13 @@ namespace validator.Domain.Feature
     {
         //contain all tfns stored in 30 seconds, should stay in server side globally.
 
-        private List<TFNtoCheck> tfns = new List<TFNtoCheck>();//TODO:move to server side in memory cache.
+        public static Dictionary<string, TFNtoCheck> tfns;//server side in-memory TFN pool.
 
-        public bool IfBruteAttack(int newTfn)
+        public static void CreateTfnPool()
+        {
+            tfns = new Dictionary<string,TFNtoCheck>();
+        }
+        public static bool IfBruteAttack(int newTfn)
         {
             var tfn = new TFNtoCheck
             {
@@ -20,25 +25,29 @@ namespace validator.Domain.Feature
             };
             if(tfns.Count == 0)
             {
-                tfns.Add(tfn);
+                tfns.Add(newTfn.ToString(), tfn);
             }
             else
             {
                 RemoveOldTfn(tfn);
+                if (!tfns.ContainsKey(newTfn.ToString())){
+                    tfns.Add(newTfn.ToString(), tfn);
+                }
             }
 
             //check if  3 linked TFN found in the tfns list
             return false;
         }
 
-        private void RemoveOldTfn(TFNtoCheck tfn)
+        private static void RemoveOldTfn(TFNtoCheck tfn)
         {
-            for (int i = 0; i < tfns.Count; i++)
+            var list = tfns.Select(kvp => kvp.Value).ToList();
+            for (int i = 0; i < list.Count; i++)
             {
-                var diffInSeconds = (tfns[i].TimeStamp - tfn.TimeStamp).TotalSeconds;
+                var diffInSeconds = (tfn.TimeStamp - list[i].TimeStamp).TotalSeconds;
                 if (diffInSeconds >= 30)
                 {
-                    tfns.RemoveAt(i);
+                    tfns.Remove(list[i].Value.ToString());
                 }
             };
         }
