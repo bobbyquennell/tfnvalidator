@@ -31,6 +31,29 @@ namespace tfn.Test
             Assert.That(result, Is.Not.EqualTo(0));
         }
 
+        [Test]
+        public void Validate_TFN_8_Digits_Success()
+        {
+            TFNtoCheck model = GenerateNewTFNtoCheck(81854402);
+            var alg = new WeightedAlgorithm();
+            var validator = new TfnValidator(alg);
+
+            var result = validator.Validate(model.Value);
+            Assert.That(result, Is.EqualTo(0));
+        }
+
+        [Test]
+        public void Validate_TFN_8_Digits_Fail()
+        {
+            TFNtoCheck model = GenerateNewTFNtoCheck(81854401);
+            var alg = new WeightedAlgorithm();
+            var validator = new TfnValidator(alg);
+
+            var result = validator.Validate(model.Value);
+            Assert.That(result, Is.Not.EqualTo(0));
+        }
+
+
 
         private TFNtoCheck GenerateNewTFNtoCheck(int v)
         {
