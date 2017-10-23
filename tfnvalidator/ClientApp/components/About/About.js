@@ -29,6 +29,20 @@ const About = ()=>{
         <li>648 188 527</li>
         <li>648 188 535</li>
       </ul>
+      <h2>Sample for Linked TFN testing</h2>
+      <ul>
+        <li>543219876</li>
+        <li>543319876</li>
+        <li>543419876</li>
+        <br/>
+        <li>543219876</li>
+        <li>543218629</li>
+        <li>862199876</li>
+        <br/>
+        <li>123456789</li>
+        <li>123459876</li>
+        <li>543219876</li>
+      </ul>
     </div>
   );
 };

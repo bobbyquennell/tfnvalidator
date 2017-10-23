@@ -18,7 +18,7 @@ let TFNs = [
   }
 ];
 /* simulate api delay */
-const delay = 0;
+const delay = 1000;
 
 export  function mock_verifyTfnWithSuccess(tfn){
   return  new Promise(

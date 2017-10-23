@@ -18,6 +18,7 @@ export class Home extends React.Component {
             <strong>Styling:</strong>Bootstrap, inline styling
           </li>
         </ul>
+        <p>note: in order to display the loading.. effect, a 1s mock api delay included</p>
 
       </div>
     );

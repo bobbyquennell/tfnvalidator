@@ -74,11 +74,11 @@ namespace validator.Domain.Feature
                                     return true;
                                 }
                             }
-                            else
-                            {
+                            //else
+                            //{
                                 //todo: error handling
-                                throw new Exception(); 
-                            }
+                            //    throw new Exception(); 
+                            //}
                         }
                         if(securityScanMap[set].Count == 2)
                         {
