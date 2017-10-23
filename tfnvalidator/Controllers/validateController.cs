@@ -27,10 +27,9 @@ namespace tfnvalidator.Controllers
 
             var alg = new WeightedAlgorithm();
             var validator = new TfnValidator(alg);
-            //var protector = new BruteTryProtector();
             try
             {
-                bool isAttack = BruteTryProtector.IfBruteAttack(Convert.ToInt32(tfn.Replace(" ", String.Empty)));
+                bool isAttack = BruteAttackProtector.IfBruteAttack(Convert.ToInt32(tfn.Replace(" ", String.Empty)));
                 if (isAttack)
                 {
                     return BadRequest("linked");
