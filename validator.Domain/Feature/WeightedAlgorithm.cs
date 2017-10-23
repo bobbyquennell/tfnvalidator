@@ -9,7 +9,6 @@ namespace validator.Domain.Feature
     {
         public int getRemainder(int tfn)
         {
-            //throw new NotImplementedException();
             var digits = tfn.ToString().Select( n =>n.ToString()).ToArray();
             //do the calcs
             int sum = 1;
