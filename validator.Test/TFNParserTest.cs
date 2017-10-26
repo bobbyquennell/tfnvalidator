@@ -22,15 +22,20 @@ namespace tfn.Test
 
             Assert.That(result.ElementAt(0).ToArray(), Is.EqualTo(new int[] { 1, 2, 3, 4 }));
             Assert.That(result.ElementAt(1).ToArray(), Is.EqualTo(new int[] { 2, 3, 4, 5 }));
-            Assert.That(result.ElementAt(2).ToArray(), Is.EqualTo(new int[] { 9, 8, 7, 6 }));
+            //Assert.That(result.ElementAt(2).ToArray(), Is.EqualTo(new int[] { 9, 8, 7, 6 }));
+            Assert.That(result.ElementAt(2).ToArray(), Is.EqualTo(new int[] { 6, 7, 8, 9 }));
             Assert.That(result.ElementAt(3).ToArray(), Is.EqualTo(new int[] { 1, 2, 3, 4, 5 }));
 
             Assert.That(result2.Count, Is.EqualTo(4));
 
-            Assert.That(result2.ElementAt(0).ToArray(), Is.EqualTo(new int[] { 5, 4, 3, 2 }));
-            Assert.That(result2.ElementAt(1).ToArray(), Is.EqualTo(new int[] { 4, 3, 2, 1 }));
-            Assert.That(result2.ElementAt(2).ToArray(), Is.EqualTo(new int[] { 9, 8, 7, 6 }));
-            Assert.That(result2.ElementAt(3).ToArray(), Is.EqualTo(new int[] { 5, 4, 3, 2, 1 }));
+            //Assert.That(result2.ElementAt(0).ToArray(), Is.EqualTo(new int[] { 5, 4, 3, 2 }));
+            //Assert.That(result2.ElementAt(1).ToArray(), Is.EqualTo(new int[] { 4, 3, 2, 1 }));
+            //Assert.That(result2.ElementAt(2).ToArray(), Is.EqualTo(new int[] { 9, 8, 7, 6 }));
+            //Assert.That(result2.ElementAt(3).ToArray(), Is.EqualTo(new int[] { 5, 4, 3, 2, 1 }));
+            Assert.That(result2.ElementAt(0).ToArray(), Is.EqualTo(new int[] { 2, 3, 4, 5 }));
+            Assert.That(result2.ElementAt(1).ToArray(), Is.EqualTo(new int[] { 1, 2, 3, 4 }));
+            Assert.That(result2.ElementAt(2).ToArray(), Is.EqualTo(new int[] { 6, 7, 8, 9 }));
+            Assert.That(result2.ElementAt(3).ToArray(), Is.EqualTo(new int[] { 1, 2, 3, 4, 5 }));
 
             Assert.That(result3.Count, Is.EqualTo(21));
 

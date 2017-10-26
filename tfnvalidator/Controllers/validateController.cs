@@ -19,14 +19,22 @@ namespace tfnvalidator.Controllers
         {
             this.cache = cache;
         }*/
+
+        private readonly IValidateAlgorithm _alg;
+        public validateController(IValidateAlgorithm alg)
+        {
+            _alg = alg;
+        }
+
         // GET: api/validate
         [HttpGet]
         public IActionResult Get(string tfn)
         {
-            //ToDo: server sive validation
+            
+        //ToDo: server sive validation
 
-            var alg = new WeightedAlgorithm();
-            var validator = new TfnValidator(alg);
+            //var alg = new WeightedAlgorithm();
+            var validator = new TfnValidator(_alg);
             try
             {
                 bool isAttack = BruteAttackProtector.IfBruteAttack(Convert.ToInt32(tfn.Replace(" ", String.Empty)));

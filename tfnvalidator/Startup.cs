@@ -24,6 +24,7 @@ namespace tfnvalidator
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddMvc();
+            services.AddSingleton<IValidateAlgorithm, WeightedAlgorithm>();
             BruteAttackProtector.CreateTfnPool();
         }
 

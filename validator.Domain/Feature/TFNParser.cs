@@ -65,7 +65,7 @@ namespace validator.Domain.Feature
                     if (sum == (setLen * input[i] - ((setLen - 1) * setLen) / 2))
                     {
                         List<int> set = new List<int>();
-                        for (int m = 0; m < setLen; m++)
+                        for (int m = setLen-1; m >=0; m--)
                         {
                             set.Add(input[i + m]);
                         }
