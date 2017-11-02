@@ -10,99 +10,72 @@ namespace validator.Domain.Feature
     {
         //contain all tfns stored in 30 seconds, should stay in server side globally.
 
-        public static Dictionary<string, TFNtoCheck> tfns;//server side in-memory TFN pool.  (tfn string value, tfn object)
-        public static Dictionary<string, Dictionary<string, TFNtoCheck>> securityScanMap;//server side in-memory consecutive number sets and it's tfn list.
-        //      key                               value
-        //consecutive value (string)      TFN  that contains this consecutive value (dictionary) 
-
-        public static Dictionary<string, string> linkedMap;// linked TFN scan result
+        public static List<TFNtoCheck> tfns;//server side in-memory TFN pool.
+        public static Dictionary<string, string> linkedMap;// linked TFN scan result (A, B) A linked to B, (C, 0) C linked to no-one
         public static int timeOutInSecond;
 
         public static void CreateTfnPool(int TimeOutInSecond = 30)
         {
-            tfns = new Dictionary<string, TFNtoCheck>();//will create a global instance in the Application.
-            securityScanMap = new Dictionary<string, Dictionary<string, TFNtoCheck>>();
+            tfns = new List<TFNtoCheck>();//will create a global instance in the Application.
             linkedMap = new Dictionary<string, string>();
             timeOutInSecond = TimeOutInSecond;
         }
         public static bool IfBruteAttack(int newTfn)
         {
-            
-            //1) keep Tfb pool updated
+            string LinkedTfn = string.Empty;
+
+            //1) keep Tfn pool updated
             RefreshTfnPool(newTfn);
 
-            //2) generate ConsecutiveSets Map and perform security scan
-
-            foreach (KeyValuePair<string, TFNtoCheck> item in tfns)
+            if(!linkedMap.ContainsKey(newTfn.ToString()))
             {
-                //if this tfn already scanned, skip this loop
-                if (linkedMap.ContainsKey(item.Key))
-                {
-                    continue;
-                }
-                List<IEnumerable<int>> sets = TFNParser.FindConsecutiveNumSets(item.Key).ToList();
-                List<string> ConsecutiveSets = new List<string>();
-                //Dictionary<string, string> linkedMap = new Dictionary<string, string>();
-                foreach (var set in sets)
-                {
-                    ConsecutiveSets.Add(string.Join("", set));
-                }
-                foreach (string set in ConsecutiveSets) // set: consecutive number subset from a given TFN
-                {
-                    if (securityScanMap.ContainsKey(set))// if this consecutive number already exists
-                    {
-                        if(securityScanMap[set].Count == 1)
-                        {
-                            //found a A-B single linked TFN pair
-                            
-                            //update the inital linked map pair: (A,0) to (A, B) 
-                            string linkedMapKey = securityScanMap[set].Keys.ToArray()[0];
-                            if (linkedMap.ContainsKey(linkedMapKey)) {
-                                if (linkedMap[linkedMapKey] == "0")
-                                {
-                                    linkedMap[linkedMapKey] = item.Key;//item.key : tfn string value
-                                }
-                                else if(linkedMap[linkedMapKey] == item.Key)
-                                {
-                                    //found TFN A and B shared the second set !
-                                    // do nothing
-                                }
-                                else if(linkedMap[linkedMapKey] !="0" && linkedMap[linkedMapKey] != item.Key)
-                                {
-                                    //c!= b, ok, we already have (A, B), now we found (A, C)
-                                    //found 3 linked TFN : (A,B) shared set 1, (A, C) shared set 2 !
-                                    return true;
-                                }
-                            }
-                            //else
-                            //{
-                                //todo: error handling
-                            //    throw new Exception(); 
-                            //}
-                        }
-                        if(securityScanMap[set].Count == 2)
-                        {
-                            //found 3 linked TFN shared the same set !
-                            return true;
-                        }
-                        // add the TFN to the TFN dictionary under this consecutive number
-                        if (! securityScanMap[set].ContainsKey(item.Key)) //item.key : tfn string value
-                        {
-                            securityScanMap[set].Add(item.Key, item.Value);
-                            //linkedMap.Add(item.Key, ""); // linked map: (A, 0) add initial key pair
-                        }
-                    }
-                    else
-                    { // add new consecutive number into securityScanMap
-                        var newTfnDictionary = new Dictionary<string, TFNtoCheck>();
-                        newTfnDictionary.Add(item.Key, item.Value);
-                        securityScanMap.Add(set, newTfnDictionary);
-
-                        // linked map: (A, 0) add initial key pair
-                        if (!linkedMap.ContainsKey(item.Key)) { linkedMap.Add(item.Key, "0"); }
-                    }
-                }
+                //and an entry in the linkedMap for the newTfn:  for the 1st time
+                linkedMap.Add(newTfn.ToString(), string.Empty); //(newTfn, 0)
             }
+
+            //2) Scan in the TFN pool,check with newTFN
+            for (int i = 0; i < tfns.Count; i++)
+            {
+                //if newTfn  "linked" to tfns[i]
+                if(TFNParser.IfTfnPairLinked(tfns[i].Value.ToString(), newTfn.ToString()))
+                {
+                    LinkedTfn = newTfn.ToString();
+                    //store the "linked" relationship in the linkedMap
+                    if (linkedMap.ContainsKey(tfns[i].Value.ToString()) && linkedMap[tfns[i].Value.ToString()] == string.Empty )//if find (A, 0)
+                    {
+                        // found the first linked pair, store in the map (A, B)
+                        linkedMap[tfns[i].Value.ToString()] = newTfn.ToString();
+
+                        if(linkedMap.ContainsKey(newTfn.ToString()) && linkedMap[newTfn.ToString()] == string.Empty)//if find (B,0)
+                        {
+                            linkedMap[newTfn.ToString()] = tfns[i].Value.ToString();//store the reverse pair (B, A) into the map
+                        }
+                        else if (linkedMap.ContainsKey(newTfn.ToString()) && linkedMap[newTfn.ToString()] != string.Empty)//if find (B,X)
+                        {
+                            if (tfns[i].Value.ToString() != newTfn.ToString()) {
+                                return true;
+                            }
+                        }
+                    }
+                    else if (linkedMap.ContainsKey(tfns[i].Value.ToString()) && linkedMap[tfns[i].Value.ToString()] != string.Empty)
+                    {
+                        // found the second linked pair
+                        if(linkedMap[tfns[i].Value.ToString()] == newTfn.ToString())
+                        {
+
+                        }
+                        if (linkedMap.ContainsKey(newTfn.ToString()) && linkedMap[newTfn.ToString()] == string.Empty)//if find (B,0)
+                        {
+                            linkedMap[newTfn.ToString()] = tfns[i].Value.ToString();//store the reverse pair (B, A) into the map
+                        }
+                        return true;
+                    }
+                }
+                //
+            }
+            
+            //3) store the new TFN into the Tfn pool
+            InsertTfnPool(newTfn);
             return false;
         }
 
@@ -113,40 +86,80 @@ namespace validator.Domain.Feature
                 Value = newTfn,
                 TimeStamp = DateTime.Now
             };
-            if (tfns.Count == 0)
-            {
-                tfns.Add(newTfn.ToString(), tfn);
-            }
-            else
+            if (tfns.Count > 0)
             {
                 RemoveOldTfn(tfn, timeOutInSecond);
-                //every tfn stored in the tfn pool is unique
-                if (!tfns.ContainsKey(newTfn.ToString()))
-                {
-                    tfns.Add(newTfn.ToString(), tfn);
-                }
             }
+
+        }
+        private static void InsertTfnPool(int newTfn)
+        {
+            var tfn = new TFNtoCheck
+            {
+                Value = newTfn,
+                TimeStamp = DateTime.Now
+            };
+            tfns.Add(tfn); 
+
         }
 
         private static void RemoveOldTfn(TFNtoCheck tfn, int timeOut= 30)
         {
             //update Tfb Pool
-            var list = tfns.Select(kvp => kvp.Value).ToList();
-            for (int i = 0; i < list.Count; i++)
+            var list = tfns;
+            int OldTfnValue = 0;
+            var removals = new List<string>();
+            for (int i = 0; i < tfns.Count; i++)
             {
                 var diffInSeconds = (tfn.TimeStamp - list[i].TimeStamp).TotalSeconds;
                 if (diffInSeconds >= timeOut)
                 {
-                    tfns.Remove(list[i].Value.ToString());//FIFO, remove the oldes TFN
-                    //remove Old TFN from securityScanMap
-                    foreach(KeyValuePair<string, Dictionary<string, TFNtoCheck>> item in securityScanMap)
+                    
+                    OldTfnValue = list[i].Value;
+                    tfns.RemoveAt(i);//FIFO, remove the oldes TFN
+                    //remove Old TFN relationship from linkedMap
+                    var remainList = tfns.Select(t => t).Where(t => t.Value == OldTfnValue).ToList();
+                    if (remainList.Count == 0)// is tfn A does not exist in tfn pool anymore
                     {
-                        item.Value.Remove(list[i].Value.ToString());
+                        //remove (A, A), (A, X), and (X, A) from linkedMap
+
+                        if (linkedMap.ContainsKey(OldTfnValue.ToString())) {
+                            linkedMap.Remove(OldTfnValue.ToString());// (A, A) or (A, X) will be removed.
+                        }
+
+
+                            //remove (X, A) from Linked Map
+                        foreach (KeyValuePair<string, string> item in linkedMap)
+                        {
+                            if (item.Value.ToString() == OldTfnValue.ToString())
+                            {
+                                removals.Add(item.Key.ToString());
+                            }
+                        }
+                        for (int n = 0; n < removals.Count; n++)
+                        {
+                            linkedMap.Remove(removals[n]);
+                        }
                     }
-                    //remove Old TFN from linkedMap
-                    linkedMap.Remove(list[i].Value.ToString());
+                    if (remainList.Count == 1)// is only one tfn A left in tfn pool 
+                    {
+                        // only remove (A,A), remain (A, X), and (X, A)
+                        if (linkedMap.ContainsKey(OldTfnValue.ToString()) && linkedMap[OldTfnValue.ToString()] == OldTfnValue.ToString())
+                        {
+                            linkedMap.Remove(OldTfnValue.ToString());
+                        }
+
+                    }
+                    if (remainList.Count > 1)
+                    {
+                        //remain (A,A), (A, X), and (X, A), do nothing
+                    }
+
+                    
                 }
             };
+
+ 
 
 
         }
